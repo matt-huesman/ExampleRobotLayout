@@ -39,21 +39,21 @@ public class DrivetrainSubsystem extends SubsystemBase {
       new Rotation2d(Constants.Drivetrain.FRONT_LEFT_MODULE_STEER_OFFSET_RADIANS)
     );
     frontRightModule = new Mk3StandardSwerveModule(
-      "front left",
+      "front right",
       Constants.Drivetrain.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
       Constants.Drivetrain.FRONT_RIGHT_MODULE_STEER_MOTOR,
       Constants.Drivetrain.FRONT_RIGHT_MODULE_STEER_ENCODER,
       new Rotation2d(Constants.Drivetrain.FRONT_RIGHT_MODULE_STEER_OFFSET_RADIANS)
     );
     backLeftModule = new Mk3StandardSwerveModule(
-      "front left",
+      "back left",
       Constants.Drivetrain.BACK_LEFT_MODULE_DRIVE_MOTOR,
       Constants.Drivetrain.BACK_LEFT_MODULE_STEER_MOTOR,
       Constants.Drivetrain.BACK_LEFT_MODULE_STEER_ENCODER,
       new Rotation2d(Constants.Drivetrain.BACK_LEFT_MODULE_STEER_OFFSET_RADIANS)
     );
     backRightModule = new Mk3StandardSwerveModule(
-      "front left",
+      "back right",
       Constants.Drivetrain.BACK_RIGHT_MODULE_DRIVE_MOTOR,
       Constants.Drivetrain.BACK_RIGHT_MODULE_STEER_MOTOR,
       Constants.Drivetrain.BACK_RIGHT_MODULE_STEER_ENCODER,

@@ -20,7 +20,9 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.Constants.Dashboard;
 
 /** Add your docs here. */
 public class Mk3StandardSwerveModule {
@@ -186,6 +188,11 @@ public class Mk3StandardSwerveModule {
         );
 
         // Set the motor to our desired velocity as a percentage of our max velocity
+
+        SmartDashboard.putNumber(debugName + ": Speed", speedMetersPerSecond);
+
+        SmartDashboard.putNumber(debugName + ": Rotation", steerAngle.getDegrees());
+
         driveMotor.set(
             TalonFXControlMode.PercentOutput, 
             desiredState.speedMetersPerSecond / Constants.SwerveModule.MAX_VELOCITY_METERS_PER_SECOND

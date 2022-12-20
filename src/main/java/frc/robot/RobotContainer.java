@@ -4,13 +4,17 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.Constants.Drivetrain;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.io.ControlPannel;
 import frc.robot.io.Dashboard;
+import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystemFactory;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
@@ -24,6 +28,8 @@ public class RobotContainer {
 
   private final Dashboard dashboard;
 
+  private final DrivetrainSubsystem drivetrainSubsystem;
+
   private final Joystick driveJoystick;
   private final Joystick turnJoystick;
   private final ControlPannel controlPannel;
@@ -36,9 +42,11 @@ public class RobotContainer {
     
     dashboard = Dashboard.getInstance();
 
+    drivetrainSubsystem = new DrivetrainSubsystem();
+
     // Construct drive joystick
     driveJoystick = new Joystick(0);
-    exampleButton = new JoystickButton(driveJoystick, 0);
+    exampleButton = new JoystickButton(driveJoystick, 1);
     configureDriveButtonBindings();
 
     // Construct turn joystick
@@ -48,11 +56,34 @@ public class RobotContainer {
     // Construct control pannel
     controlPannel = new ControlPannel(2);
     configureControlButtonBindings();
+
+    drivetrainSubsystem.setDefaultCommand(new RunCommand(() -> {
+      double driveY = driveJoystick.getY();
+      if (Math.abs(driveY) < 0.1) {
+        driveY = 0;
+      }
+
+      double driveX = driveJoystick.getX();
+      if (Math.abs(driveX) < 0.1) {
+        driveX = 0;
+      }
+
+      double turnX = turnJoystick.getY();
+      if (Math.abs(turnX) < 0.1) {
+        turnX = 0;
+      }
+      
+      drivetrainSubsystem.drive(new ChassisSpeeds(
+        driveY,
+        driveX,
+        turnX
+      ));
+    }, drivetrainSubsystem));
   }
 
   // Configure button bindings for drive joystick
   private void configureDriveButtonBindings() {
-    exampleButton.whenPressed(null);
+    exampleButton.whenPressed(() -> {});
   }
 
   // Configure button bindings for turn joystick
