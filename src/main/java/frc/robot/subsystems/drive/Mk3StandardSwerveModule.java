@@ -22,7 +22,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.Constants.Dashboard;
 
 /** Add your docs here. */
 public class Mk3StandardSwerveModule {
@@ -97,6 +96,8 @@ public class Mk3StandardSwerveModule {
                 error.toString(),
                 false
             );
+        } else {
+            SmartDashboard.putNumber(debugName + " : CANCoder Initial Value", canCoder.getAbsolutePosition());
         }
 
         // Reduce CAN status frame rates
@@ -154,7 +155,7 @@ public class Mk3StandardSwerveModule {
 
         // getAbsoluteAngle()
         if ((error = steerMotor.setSelectedSensorPosition(
-            canCoder.getAbsolutePosition() / Constants.SwerveModule.STEER_RADIANS_PER_TICK, 
+            Math.toRadians(canCoder.getAbsolutePosition()) / Constants.SwerveModule.STEER_RADIANS_PER_TICK, 
             0,
             Constants.SwerveModule.CAN_TIMEOUT_MS
         )) != ErrorCode.OK) {
@@ -184,14 +185,16 @@ public class Mk3StandardSwerveModule {
         // Reduce radians to 0 to 2pi range and simplify to nearest angle
         desiredState = SwerveModuleState.optimize(
             desiredState, 
-            new Rotation2d(steerMotor.getSelectedSensorPosition() * Constants.SwerveModule.STEER_RADIANS_PER_TICK)
+            getState().angle
         );
 
         // Set the motor to our desired velocity as a percentage of our max velocity
 
-        SmartDashboard.putNumber(debugName + ": Speed", speedMetersPerSecond);
+        SmartDashboard.putNumber(debugName + ": Speed", desiredState.speedMetersPerSecond);
 
-        SmartDashboard.putNumber(debugName + ": Rotation", steerAngle.getDegrees());
+        SmartDashboard.putNumber(debugName + ": Rotation", desiredState.angle.getRadians());
+
+        SmartDashboard.putNumber(debugName + ": Sensor Position", steerMotor.getSelectedSensorPosition());
 
         driveMotor.set(
             TalonFXControlMode.PercentOutput, 

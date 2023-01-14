@@ -62,16 +62,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     kinematics = new SwerveDriveKinematics(
       // Front left
-      new Translation2d(Constants.Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Constants.Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-      // Front right
       new Translation2d(Constants.Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -Constants.Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+      // Front right
+      new Translation2d(Constants.Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Constants.Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0),
       // Back left
-      new Translation2d(-Constants.Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Constants.Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+      new Translation2d(-Constants.Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -Constants.Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0),
       // Back right
-      new Translation2d(-Constants.Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -Constants.Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0)
+      new Translation2d(-Constants.Drivetrain.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Constants.Drivetrain.DRIVETRAIN_WHEELBASE_METERS / 2.0)
     );
 
     navx = new AHRS(SPI.Port.kMXP, (byte) 200);
+    navx.reset();
 
     odometry = new SwerveDriveOdometry(kinematics, navx.getRotation2d());
   }
@@ -84,9 +85,26 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   private void setModuleStates(SwerveModuleState[] swerveModuleStates) {
-    frontLeftModule.setState(swerveModuleStates[0].speedMetersPerSecond, swerveModuleStates[0].angle);
-    frontRightModule.setState(swerveModuleStates[1].speedMetersPerSecond, swerveModuleStates[1].angle);
-    backLeftModule.setState(swerveModuleStates[2].speedMetersPerSecond, swerveModuleStates[2].angle);
-    backRightModule.setState(swerveModuleStates[3].speedMetersPerSecond, swerveModuleStates[3].angle);
+    boolean hasVelocity = swerveModuleStates[0].speedMetersPerSecond != 0
+      && swerveModuleStates[1].speedMetersPerSecond != 0 
+      && swerveModuleStates[2].speedMetersPerSecond != 0
+      && swerveModuleStates[3].speedMetersPerSecond != 0;
+
+    frontLeftModule.setState(
+      swerveModuleStates[0].speedMetersPerSecond, 
+      hasVelocity ? swerveModuleStates[0].angle : frontLeftModule.getState().angle
+    );
+    frontRightModule.setState(
+      swerveModuleStates[1].speedMetersPerSecond, 
+      hasVelocity ? swerveModuleStates[1].angle : frontRightModule.getState().angle
+    );
+    backLeftModule.setState(
+      swerveModuleStates[2].speedMetersPerSecond, 
+      hasVelocity ? swerveModuleStates[2].angle : backLeftModule.getState().angle
+    );
+    backRightModule.setState(
+      swerveModuleStates[3].speedMetersPerSecond, 
+      hasVelocity ? swerveModuleStates[3].angle : backRightModule.getState().angle
+    );
   }
 }

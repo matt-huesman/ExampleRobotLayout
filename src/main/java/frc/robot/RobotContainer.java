@@ -68,7 +68,7 @@ public class RobotContainer {
         driveX = 0;
       }
 
-      double turnX = turnJoystick.getY();
+      double turnX = turnJoystick.getX();
       if (Math.abs(turnX) < 0.1) {
         turnX = 0;
       }
